@@ -33,7 +33,7 @@ sudo apt-get update
 sudo apt install openjdk-17-jdk -y
 sudo apt install maven -y
 
-# Monitoring
+# ================ Monitoring ======================
 sudo apt update -y
 
 ##Install Prometheus and Create Service for Prometheus
