@@ -97,12 +97,12 @@ resource "aws_lb_target_group_attachment" "webserver1" {
 
 resource "aws_instance" "webserver1" {
   ami                         = data.aws_ami.ubuntu.id
-  instance_type               = "t3.micro"
+  instance_type               = "t2.micro"
   key_name                    = data.aws_key_pair.existing_key_pair.key_name
   subnet_id                   = var.tf_public_subnets[0].id
   security_groups             = [aws_security_group.tfWebserverSecurityGroup.id]
   associate_public_ip_address = true
-  user_data                   = templatefile("./install.sh", {})
+  user_data                   =  templatefile("${path.module}/install.sh", {})
 
   tags = {
     Name = "TF-EKS-Jenkins-Monitoring"
@@ -117,7 +117,7 @@ resource "aws_eks_node_group" "node-grp" {
   subnet_ids      = [var.tf_public_subnets[0].id, var.tf_public_subnets[1].id]
   capacity_type   = "ON_DEMAND"
   disk_size       = "20"
-  instance_types  = ["t3.micro"]
+  instance_types  = ["t2.micro"]
 
   remote_access {
     ec2_ssh_key               = data.aws_key_pair.existing_key_pair.key_name
