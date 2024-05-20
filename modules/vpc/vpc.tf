@@ -51,22 +51,25 @@ resource "aws_subnet" "tfPublicSubnet1" {
   }
 }
 
-/* resource "aws_eip" "tfNatGatewayEIP2" {
+resource "aws_eip" "tfNatGatewayEIP2" {
+  domain = "vpc"
+
   tags = {
-    Name    = "tfNatGatewayEIP2"
-    Project = "TF Project"
+    Name = "${local.env}-tfNatGatewayEIP2"
   }
 }
 
 resource "aws_nat_gateway" "tfNatGateway2" {
   allocation_id = aws_eip.tfNatGatewayEIP2.id
   subnet_id     = aws_subnet.tfPublicSubnet1.id
+
   tags = {
-    Name    = "tfNatGateway2"
-    Project = "TF Project"
+    Name = "${local.env}-tfNatGateway2"
   }
+
+  depends_on = [aws_internet_gateway.tfIGW]
 }
-*/
+
 
 resource "aws_subnet" "tfPublicSubnet2" {
   vpc_id                  = aws_vpc.tfVPC.id
