@@ -2,6 +2,9 @@ locals {
   bucket_name = "btf-state-backend"
   table_name  = "btf-state-locking"
 
+  ecr_repo_name = "tfr-app-ecr-repo"
+  env           = "staging"
+
   vpc_cidr             = "10.0.0.0/16"
   availability_zones   = ["eu-west-3a", "eu-west-3b"]
   public_subnet_cidrs  = ["10.0.0.0/24", "10.0.1.0/24"]
