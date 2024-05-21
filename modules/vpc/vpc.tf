@@ -6,16 +6,15 @@ resource "aws_vpc" "tfVPC" {
   enable_dns_support   = true
   enable_dns_hostnames = true
 
-  tags = {
-    Name = "${local.env}-tfVPC"
-  }
+  tags = var.vpc_tags
 }
 
 resource "aws_internet_gateway" "tfIGW" {
   vpc_id = aws_vpc.tfVPC.id
 
   tags = {
-    Name = "${local.env}-tfIGW"
+    Name    = "tfIGW"
+    Project = "TF Project"
   }
 }
 
@@ -23,7 +22,8 @@ resource "aws_eip" "tfNatGatewayEIP1" {
   domain = "vpc"
 
   tags = {
-    Name = "${local.env}-tfNatGatewayEIP1"
+    Name    = "tfNatGatewayEIP1"
+    Project = "TF Project"
   }
 }
 
@@ -32,7 +32,8 @@ resource "aws_nat_gateway" "tfNatGateway1" {
   subnet_id     = aws_subnet.tfPublicSubnet1.id
 
   tags = {
-    Name = "${local.env}-tfNatGateway1"
+    Name    = "tfNatGateway1"
+    Project = "TF Project"
   }
 
   depends_on = [aws_internet_gateway.tfIGW]
@@ -45,9 +46,9 @@ resource "aws_subnet" "tfPublicSubnet1" {
   map_public_ip_on_launch = true
 
   tags = {
-    "Name"                                                 = "${local.env}-public-${var.availability_zones[0]}"
-    "kubernetes.io/role/elb"                               = "1"
-    "kubernetes.io/cluster/${local.env}-${local.eks_name}" = "owned"
+    "Name"                                                    = "tfPublicSubnet1-${var.availability_zones[0]}"
+    "kubernetes.io/role/elb"                                  = "1"
+    "kubernetes.io/cluster/tfPublicSubnet1-${local.eks_name}" = "owned"
   }
 }
 
@@ -55,7 +56,8 @@ resource "aws_eip" "tfNatGatewayEIP2" {
   domain = "vpc"
 
   tags = {
-    Name = "${local.env}-tfNatGatewayEIP2"
+    Name    = "tfNatGatewayEIP2"
+    Project = "TF Project"
   }
 }
 
@@ -64,7 +66,8 @@ resource "aws_nat_gateway" "tfNatGateway2" {
   subnet_id     = aws_subnet.tfPublicSubnet1.id
 
   tags = {
-    Name = "${local.env}-tfNatGateway2"
+    Name    = "tfNatGateway2"
+    Project = "TF Project"
   }
 
   depends_on = [aws_internet_gateway.tfIGW]
@@ -78,9 +81,9 @@ resource "aws_subnet" "tfPublicSubnet2" {
   map_public_ip_on_launch = true
 
   tags = {
-    "Name"                                                 = "${local.env}-public-${var.availability_zones[1]}"
-    "kubernetes.io/role/elb"                               = "1"
-    "kubernetes.io/cluster/${local.env}-${local.eks_name}" = "owned"
+    "Name"                                                    = "tfPublicSubnet2-${var.availability_zones[1]}"
+    "kubernetes.io/role/elb"                                  = "1"
+    "kubernetes.io/cluster/tfPublicSubnet2-${local.eks_name}" = "owned"
   }
 
 }
@@ -91,9 +94,9 @@ resource "aws_subnet" "tfPrivateSubnet1" {
   availability_zone = var.availability_zones[0]
 
   tags = {
-    "Name"                                                 = "${local.env}-private-${var.availability_zones[0]}"
-    "kubernetes.io/role/internal-elb"                      = "1"
-    "kubernetes.io/cluster/${local.env}-${local.eks_name}" = "owned"
+    "Name"                                                     = "tfPrivateSubnet1-${var.availability_zones[0]}"
+    "kubernetes.io/role/internal-elb"                          = "1"
+    "kubernetes.io/cluster/tfPrivateSubnet1-${local.eks_name}" = "owned"
   }
 }
 
@@ -103,9 +106,9 @@ resource "aws_subnet" "tfPrivateSubnet2" {
   availability_zone = var.availability_zones[1]
 
   tags = {
-    "Name"                                                 = "${local.env}-private-${var.availability_zones[1]}"
-    "kubernetes.io/role/internal-elb"                      = "1"
-    "kubernetes.io/cluster/${local.env}-${local.eks_name}" = "owned"
+    "Name"                                                     = "tfPrivateSubnet2-${var.availability_zones[1]}"
+    "kubernetes.io/role/internal-elb"                          = "1"
+    "kubernetes.io/cluster/tfPrivateSubnet2-${local.eks_name}" = "owned"
   }
 }
 
@@ -119,7 +122,8 @@ resource "aws_route_table" "tfPublicRT" {
   }
 
   tags = {
-    Name = "${local.env}-tfPublicRT"
+    Name    = "tfPublicRT"
+    Project = "TF Project"
   }
 }
 
@@ -131,7 +135,8 @@ resource "aws_route_table" "tfPrivateRT1" {
   }
 
   tags = {
-    Name = "${local.env}-tfPrivateRT1"
+    Name    = "tfPrivateRT1"
+    Project = "TF Project"
   }
 }
 

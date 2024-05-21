@@ -1,3 +1,3 @@
 locals {
-  env         = "staging"
+  eks_name    = "my_eks"
 }

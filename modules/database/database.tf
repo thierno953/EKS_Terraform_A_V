@@ -1,5 +1,5 @@
 resource "aws_db_subnet_group" "tfDBSubnetGroup" {
-  name = "tf-db-subnet-group"
+  name = "tf_db_subnet_group"
   subnet_ids = [
     var.tf_private_subnets[0].id,
     var.tf_private_subnets[1].id
@@ -11,7 +11,7 @@ resource "aws_db_subnet_group" "tfDBSubnetGroup" {
 }
 
 resource "aws_security_group" "tfDBSecurityGroup" {
-  name   = "tf-db-security-group"
+  name   = "tf_db_security_group"
   vpc_id = var.tf_vpc_id
 
   ingress {
@@ -41,6 +41,7 @@ resource "aws_db_instance" "tfRDS" {
   db_name                = var.db_name
   username               = var.db_user_name
   password               = var.db_user_password
+  parameter_group_name = "default.mysql5.7"
   skip_final_snapshot    = true
   tags = {
     Name    = "tfRDS"

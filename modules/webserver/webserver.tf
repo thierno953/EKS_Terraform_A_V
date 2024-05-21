@@ -15,7 +15,7 @@ data "aws_ami" "ubuntu" {
 }
 
 data "aws_key_pair" "existing_key_pair" {
-  key_name = "thierno_key"
+  key_name = "linuxvm"
 }
 
 resource "aws_security_group" "tfWebserverSecurityGroup" {

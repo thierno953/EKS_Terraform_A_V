@@ -1,5 +1,5 @@
 resource "aws_iam_role" "eks" {
-  name = "${local.env}-${local.eks_name}-eks-cluster"
+  name = "${local.env}-${local.eks_name}-eks_cluster"
 
   assume_role_policy = <<POLICY
 {
@@ -31,10 +31,7 @@ resource "aws_eks_cluster" "eks" {
     endpoint_private_access = false
     endpoint_public_access  = true
 
-    subnet_ids = [
-      aws_subnet.tfPrivateSubnet1.id,
-      aws_subnet.tfPrivateSubnet2.id
-    ]
+    subnet_ids = [var.tf_public_subnets[0].id, var.tf_public_subnets[1].id]
   }
 
   access_config {

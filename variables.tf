@@ -3,6 +3,11 @@ variable "aws_region" {
   type        = string
 }
 
+variable "vpc_tags" {
+  description = "Tags for VPC"
+  type        = map(any)
+}
+
 
 variable "db_name" {
   description = "Name of DB"

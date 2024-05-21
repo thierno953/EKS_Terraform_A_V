@@ -1,5 +1,5 @@
 resource "aws_iam_role" "nodes" {
-  name = "${local.env}-${local.eks_name}-eks-nodes"
+  name = "${local.env}-${local.eks_name}-eks_nodes"
 
   assume_role_policy = <<POLICY
 {
@@ -39,10 +39,7 @@ resource "aws_eks_node_group" "general" {
   node_group_name = "general"
   node_role_arn   = aws_iam_role.nodes.arn
 
-  subnet_ids = [
-    aws_subnet.tfPrivateSubnet1.id,
-    aws_subnet.tfPrivateSubnet2.id
-  ]
+  subnet_ids = [var.tf_public_subnets[0].id, var.tf_public_subnets[1].id]
 
   capacity_type  = "ON_DEMAND"
   instance_types = ["t3.large"]
