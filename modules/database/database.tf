@@ -36,12 +36,11 @@ resource "aws_db_instance" "tfRDS" {
   allocated_storage      = 20
   storage_type           = "standard"
   engine                 = "mysql"
-  engine_version         = "5.7"
+  engine_version         = "8.0.35"
   instance_class         = "db.t3.micro"
   db_name                = var.db_name
   username               = var.db_user_name
   password               = var.db_user_password
-  parameter_group_name = "default.mysql5.7"
   skip_final_snapshot    = true
   tags = {
     Name    = "tfRDS"
