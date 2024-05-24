@@ -1,8 +1,3 @@
-variable "tf_public_subnets" {
-  description = "Public Subnets"
-  type        = list(any)
-}
-
 variable "tf_vpc_id" {
   description = "VPC ID"
   type        = string
@@ -12,3 +7,7 @@ variable "tf_vpc_id" {
   }
 }
 
+variable "tf_public_subnets" {
+  description = "Public Subnets"
+  type        = list(any)
+}

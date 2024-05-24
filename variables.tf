@@ -8,7 +8,6 @@ variable "vpc_tags" {
   type        = map(any)
 }
 
-
 variable "db_name" {
   description = "Name of DB"
   type        = string

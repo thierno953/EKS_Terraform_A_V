@@ -1,4 +1,5 @@
 locals {
+
   bucket_name = "btf-state-backend"
   table_name  = "btf-state-locking"
 

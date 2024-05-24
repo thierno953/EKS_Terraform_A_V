@@ -18,7 +18,7 @@ data "aws_key_pair" "existing_key_pair" {
   key_name = "linuxvm"
 }
 
-resource "aws_security_group" "tfWebserverSecurityGroup" {
+resource "aws_security_group" "tfBastionSecurityGroup" {
   name        = "allow_ssh_http"
   description = "Allow ssh http inbound traffic"
   vpc_id      = var.tf_vpc_id
@@ -26,14 +26,10 @@ resource "aws_security_group" "tfWebserverSecurityGroup" {
   dynamic "ingress" {
     for_each = var.ingress_rules
     content {
-      from_port        = ingress.value["port"]
-      to_port          = ingress.value["port"]
-      protocol         = ingress.value["proto"]
-      cidr_blocks      = ingress.value["cidr_blocks"]
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      security_groups  = []
-      self             = false
+      from_port   = ingress.value["port"]
+      to_port     = ingress.value["port"]
+      protocol    = ingress.value["proto"]
+      cidr_blocks = ingress.value["cidr_blocks"]
     }
   }
 
@@ -45,7 +41,7 @@ resource "aws_security_group" "tfWebserverSecurityGroup" {
   }
 
   tags = {
-    Name    = "tfWebserverSecurityGroup"
+    Name    = "tfBastionSecurityGroup"
     Project = "TF Project"
   }
 }
@@ -53,7 +49,7 @@ resource "aws_security_group" "tfWebserverSecurityGroup" {
 resource "aws_lb" "tfLoadBalancer" {
   load_balancer_type = "application"
   subnets            = [var.tf_public_subnets[0].id, var.tf_public_subnets[1].id]
-  security_groups    = [aws_security_group.tfWebserverSecurityGroup.id]
+  security_groups    = [aws_security_group.tfBastionSecurityGroup.id]
   tags = {
     Name    = "tfLoadBalancer"
     Project = "TF Project"
@@ -92,29 +88,29 @@ resource "aws_lb_target_group" "tfTargetGroup" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "webserver" {
+resource "aws_lb_target_group_attachment" "bastion" {
   target_group_arn = aws_lb_target_group.tfTargetGroup.arn
-  target_id        = aws_instance.webserver.id
+  target_id        = aws_instance.bastion.id
   port             = 8080
 }
 
 resource "aws_lb_target_group_attachment" "monitoring" {
   target_group_arn = aws_lb_target_group.tfTargetGroup.arn
-  target_id        = aws_instance.webserver.id
+  target_id        = aws_instance.bastion.id
   port             = 9090
 }
 
-resource "aws_instance" "webserver" {
+resource "aws_instance" "bastion" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.large"
   key_name                    = data.aws_key_pair.existing_key_pair.key_name
   subnet_id                   = var.tf_public_subnets[0].id
-  security_groups             = [aws_security_group.tfWebserverSecurityGroup.id]
+  security_groups             = [aws_security_group.tfBastionSecurityGroup.id]
   associate_public_ip_address = true
   user_data                   = templatefile("${path.module}/install.sh", {})
 
   tags = {
-    Name = "TF-Jenkins-EKS"
+    Name = "bastion-instance"
   }
 
   root_block_device {
@@ -127,12 +123,12 @@ resource "aws_instance" "monitoring" {
   instance_type               = "t2.medium"
   key_name                    = data.aws_key_pair.existing_key_pair.key_name
   subnet_id                   = var.tf_public_subnets[0].id
-  security_groups             = [aws_security_group.tfWebserverSecurityGroup.id]
+  security_groups             = [aws_security_group.tfBastionSecurityGroup.id]
   associate_public_ip_address = true
   user_data                   = templatefile("${path.module}/monitoring.sh", {})
 
   tags = {
-    Name = "Monitoring"
+    Name = "monitoring-instance"
   }
 
   root_block_device {

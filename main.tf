@@ -33,8 +33,22 @@ module "tfVPC" {
   private_subnet_cidrs = local.private_subnet_cidrs
 }
 
-module "webserver" {
-  source = "./modules/webserver"
+module "bastion" {
+  source = "./modules/bastion"
+
+  tf_vpc_id         = module.tfVPC.vpc_id
+  tf_public_subnets = module.tfVPC.public_subnets
+}
+
+module "ecrRepo" {
+  source = "./modules/ecr"
+
+  ecr_repo_name = local.ecr_repo_name
+}
+
+
+module "eks" {
+  source = "./modules/eks"
 
   tf_vpc_id         = module.tfVPC.vpc_id
   tf_public_subnets = module.tfVPC.public_subnets
@@ -51,17 +65,4 @@ module "database" {
   db_name          = var.db_name
   db_user_name     = var.db_user_name
   db_user_password = var.db_user_password
-}
-
-module "ecrRepo" {
-  source = "./modules/ecr"
-
-  ecr_repo_name = local.ecr_repo_name
-}
-
-module "eks" {
-  source = "./modules/eks"
-
-  tf_vpc_id         = module.tfVPC.vpc_id
-  tf_public_subnets = module.tfVPC.public_subnets
 }

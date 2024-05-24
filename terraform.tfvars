@@ -1,4 +1,5 @@
 aws_region = "eu-west-3"
+
 vpc_tags = {
   Name : "tfVPC"
   Project : "TF Project"
