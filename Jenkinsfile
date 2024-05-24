@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Configure') {
+        stage('Configure') { 
             steps {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/thierno953/terraform_a_v']])
             }
