@@ -1,9 +1,7 @@
 resource "aws_db_subnet_group" "tfDBSubnetGroup" {
-  name = "tf_db_subnet_group"
-  subnet_ids = [
-    var.tf_private_subnets[0].id,
-    var.tf_private_subnets[1].id
-  ]
+  name       = "tf_db_subnet_group"
+  subnet_ids = var.tf_private_subnets
+
   tags = {
     Name    = "tfDBSubnetGroup"
     Project = "TF Project"
@@ -15,14 +13,19 @@ resource "aws_security_group" "tfDBSecurityGroup" {
   vpc_id = var.tf_vpc_id
 
   ingress {
-    from_port = 3306
-    to_port   = 3306
-    protocol  = "tcp"
-    cidr_blocks = [
-      var.tf_private_subnet_cidrs[0],
-      var.tf_private_subnet_cidrs[1]
-    ]
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = {
     Name    = "tfDBSecurityGroup"
     Project = "TF Project"
@@ -42,8 +45,10 @@ resource "aws_db_instance" "tfRDS" {
   username               = var.db_user_name
   password               = var.db_user_password
   skip_final_snapshot    = true
+
   tags = {
     Name    = "tfRDS"
     Project = "TF Project"
   }
 }
+
